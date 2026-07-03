@@ -123,7 +123,7 @@ function setTableNumber(table) {
 
 function extractTableFromURL() {
     const params = new URLSearchParams(window.location.search);
-    const table = params.get('table');
+    const table = params.get('Table');
     if (table) {
         setTableNumber(table);
     }

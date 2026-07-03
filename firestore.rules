@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if authenticated user is an admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // Check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // ========================
+    // USERS COLLECTION
+    // ========================
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+    }
+    
+    // ========================
+    // ADMINS COLLECTION
+    // ========================
+    match /admins/{adminId} {
+      // Allows user to check their own role (exists() check)
+      allow read: if isAuthenticated() && request.auth.uid == adminId;
+      allow write: if false; // Only manageable from firebase console
+    }
+    
+    // ========================
+    // MENU COLLECTION
+    // ========================
+    match /menu/{itemId} {
+      // Anyone authenticated can view the menu
+      allow read: if isAuthenticated();
+      // Only admins can modify
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ========================
+    // ORDERS COLLECTION
+    // ========================
+    match /orders/{orderId} {
+      // User can view their own orders, admins can read all
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      // User can create if they set themselves as the userId
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Admins can update status, etc.
+      allow update: if isAdmin();
+      allow delete: if false; // Deny deletes to retain history
+    }
+    
+    // ========================
+    // BILLS COLLECTION
+    // ========================
+    match /bills/{billId} {
+      // Users can view their own bills, admins can read all
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      // Admins generate bills
+      allow create, update: if isAdmin();
+      allow delete: if false; // Retain history
+    }
+  }
+}

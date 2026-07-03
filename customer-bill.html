@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your bills and make payments - CanteenHub">
+    <title>My Bills — CanteenHub</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/customer.css">
+</head>
+<body>
+    <div class="customer-page">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span class="navbar-brand-icon">🍽️</span>
+                <span>Canteen<span class="text-gradient">Hub</span></span>
+            </div>
+            <div class="navbar-actions">
+                <button id="theme-toggle" class="btn btn-icon btn-secondary" onclick="toggleTheme()">🌙</button>
+                <div class="navbar-user" id="user-info" style="display: none;">
+                    <img class="navbar-user-avatar" id="nav-avatar" src="" alt="Avatar">
+                    <span class="navbar-user-name" id="nav-name"></span>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="signOutUser()" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </nav>
+
+        <div class="customer-main">
+            <!-- Customer Navigation -->
+            <nav class="customer-nav">
+                <a href="customer.html" class="customer-nav-link">🍽️ <span class="nav-text">Menu</span></a>
+                <a href="customer-orders.html" class="customer-nav-link">📋 <span class="nav-text">My Orders</span></a>
+                <a href="customer-bill.html" class="customer-nav-link active">💳 <span class="nav-text">Bills</span></a>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>My <span class="text-gradient">Bills</span></h1>
+                <p>View your bills and make payments</p>
+            </div>
+
+            <!-- Bills Container -->
+            <div id="bills-container">
+                <!-- Bills rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/customer-bill.js"></script>
+</body>
+</html>

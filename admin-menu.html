@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage menu items - Admin Panel">
+    <title>Menu Management — Admin Panel</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <span class="sidebar-brand-icon">🍽️</span>
+                    <span>Canteen<span class="text-gradient">Hub</span></span>
+                    <span class="sidebar-badge">Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Main</div>
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">📊</span> Dashboard
+                    </a>
+                    <a href="admin-orders.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">📋</span> Orders
+                        <span class="sidebar-nav-link-badge" id="pending-badge" style="display:none;">0</span>
+                    </a>
+                    <a href="admin-billing.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">💰</span> Billing
+                    </a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Management</div>
+                    <a href="admin-menu.html" class="sidebar-nav-link active">
+                        <span class="sidebar-nav-link-icon">🍔</span> Menu Items
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="admin-avatar">A</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name" id="admin-name">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-block mt-1" onclick="adminSignOut()">🚪 Sign Out</button>
+            </div>
+        </aside>
+
+        <div class="sidebar-mobile-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                    <h1 class="admin-page-title">🍔 Menu Management</h1>
+                </div>
+                <div class="admin-topbar-right">
+                    <button id="theme-toggle" class="btn btn-icon btn-secondary" onclick="toggleTheme()">🌙</button>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                <!-- Header Actions -->
+                <div class="section-header">
+                    <div class="search-bar" style="margin-bottom: 0; min-width: 250px;">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="menu-search" placeholder="Search menu..." oninput="handleSearch(this.value)">
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        + Add New Item
+                    </button>
+                </div>
+
+                <!-- Category Filters (Optional for admin, but helpful) -->
+                <div class="category-tabs" id="admin-category-tabs" style="margin-bottom: var(--space-lg);">
+                    <button class="category-tab active" data-category="all" onclick="filterCategory('all', this)">All</button>
+                    <button class="category-tab" data-category="Starters" onclick="filterCategory('Starters', this)">Starters</button>
+                    <button class="category-tab" data-category="Main Course" onclick="filterCategory('Main Course', this)">Main Course</button>
+                    <button class="category-tab" data-category="Beverages" onclick="filterCategory('Beverages', this)">Beverages</button>
+                    <button class="category-tab" data-category="Desserts" onclick="filterCategory('Desserts', this)">Desserts</button>
+                    <button class="category-tab" data-category="Snacks" onclick="filterCategory('Snacks', this)">Snacks</button>
+                </div>
+
+                <!-- Menu Items Grid -->
+                <div class="menu-management-grid" id="menu-grid">
+                    <!-- Items rendered here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div class="admin-modal-overlay" id="item-modal">
+        <div class="admin-modal">
+            <div class="admin-modal-header">
+                <h2 id="modal-title">Add New Item</h2>
+                <button class="btn btn-icon btn-secondary" onclick="closeModal()">✕</button>
+            </div>
+            <form id="item-form" onsubmit="handleFormSubmit(event)">
+                <div class="admin-modal-body">
+                    <input type="hidden" id="item-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="item-name">Item Name *</label>
+                        <input type="text" id="item-name" class="form-input" required placeholder="e.g., Paneer Tikka">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-description">Description</label>
+                        <textarea id="item-description" class="form-textarea" placeholder="Delicious spicy paneer..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-price">Price (₹) *</label>
+                        <input type="number" id="item-price" class="form-input" required min="0" step="0.5" placeholder="150">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-category">Category *</label>
+                        <select id="item-category" class="form-select" required>
+                            <option value="" disabled selected>Select category...</option>
+                            <option value="Starters">Starters</option>
+                            <option value="Main Course">Main Course</option>
+                            <option value="Beverages">Beverages</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Snacks">Snacks</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-image">Image URL</label>
+                        <input type="url" id="item-image" class="form-input" placeholder="https://example.com/image.jpg">
+                        <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">Provide a valid URL to the food image</p>
+                    </div>
+
+                    <div class="form-group flex-between" style="align-items: center;">
+                        <div>
+                            <label class="form-label" style="margin-bottom: 0;">Availability</label>
+                            <p class="text-muted" style="font-size: 0.75rem;">Is this item currently in stock?</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="item-available" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-btn">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-menu.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('admin-sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

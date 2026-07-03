@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage customer bills - Admin Panel">
+    <title>Billing — Admin Panel</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <span class="sidebar-brand-icon">🍽️</span>
+                    <span>Canteen<span class="text-gradient">Hub</span></span>
+                    <span class="sidebar-badge">Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Main</div>
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">📊</span> Dashboard
+                    </a>
+                    <a href="admin-orders.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">📋</span> Orders
+                        <span class="sidebar-nav-link-badge" id="pending-badge" style="display:none;">0</span>
+                    </a>
+                    <a href="admin-billing.html" class="sidebar-nav-link active">
+                        <span class="sidebar-nav-link-icon">💰</span> Billing
+                    </a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Management</div>
+                    <a href="admin-menu.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">🍔</span> Menu Items
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="admin-avatar">A</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name" id="admin-name">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-block mt-1" onclick="adminSignOut()">🚪 Sign Out</button>
+            </div>
+        </aside>
+
+        <div class="sidebar-mobile-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                    <h1 class="admin-page-title">💰 Billing Management</h1>
+                </div>
+                <div class="admin-topbar-right">
+                    <button id="theme-toggle" class="btn btn-icon btn-secondary" onclick="toggleTheme()">🌙</button>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="bill-search" placeholder="Search by customer, table, or bill ID..." oninput="filterBills()">
+                    </div>
+                    <select class="filter-select" id="bill-status-filter" onchange="filterBills()">
+                        <option value="all">All Bills</option>
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+
+                <!-- Bills Table Container -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bill ID / Date</th>
+                                <th>Customer / Table</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bills-tbody">
+                            <!-- Rows rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-billing.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('admin-sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

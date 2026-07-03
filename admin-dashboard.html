@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Dashboard - Canteen Management System">
+    <title>Dashboard — Admin Panel</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <span class="sidebar-brand-icon">🍽️</span>
+                    <span>Canteen<span class="text-gradient">Hub</span></span>
+                    <span class="sidebar-badge">Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Main</div>
+                    <a href="admin-dashboard.html" class="sidebar-nav-link active">
+                        <span class="sidebar-nav-link-icon">📊</span>
+                        Dashboard
+                    </a>
+                    <a href="admin-orders.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">📋</span>
+                        Orders
+                        <span class="sidebar-nav-link-badge" id="pending-badge" style="display:none;">0</span>
+                    </a>
+                    <a href="admin-billing.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">💰</span>
+                        Billing
+                    </a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <div class="sidebar-nav-title">Management</div>
+                    <a href="admin-menu.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-link-icon">🍔</span>
+                        Menu Items
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar" id="admin-avatar">A</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name" id="admin-name">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-block mt-1" onclick="adminSignOut()">
+                    🚪 Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mobile Overlay -->
+        <div class="sidebar-mobile-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                    <h1 class="admin-page-title">📊 Dashboard</h1>
+                </div>
+                <div class="admin-topbar-right">
+                    <button id="theme-toggle" class="btn btn-icon btn-secondary" onclick="toggleTheme()">🌙</button>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card stat-orders">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">📦</div>
+                            <span class="stat-label">Total Orders</span>
+                        </div>
+                        <div class="stat-value" id="stat-total-orders">—</div>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">⏳</div>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                        <div class="stat-value" id="stat-pending-orders">—</div>
+                    </div>
+                    <div class="stat-card stat-completed">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">✅</div>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                        <div class="stat-value" id="stat-completed-orders">—</div>
+                    </div>
+                    <div class="stat-card stat-revenue">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">💰</div>
+                            <span class="stat-label">Revenue</span>
+                        </div>
+                        <div class="stat-value" id="stat-revenue">—</div>
+                    </div>
+                    <div class="stat-card stat-unpaid">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">⚠️</div>
+                            <span class="stat-label">Unpaid Bills</span>
+                        </div>
+                        <div class="stat-value" id="stat-unpaid">—</div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="section-header">
+                    <h2>Recent Orders</h2>
+                    <a href="admin-orders.html" class="btn btn-sm btn-outline">View All →</a>
+                </div>
+                <div id="recent-orders">
+                    <!-- Recent orders rendered here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('admin-sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Login - Canteen Management System">
+    <title>Admin Login — CanteenHub</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(232, 67, 147, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .login-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            margin-bottom: var(--space-xs);
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .input-icon-wrapper .form-input {
+            padding-left: 44px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            transition: color var(--transition-fast);
+            background: none;
+            border: none;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color var(--transition-fast);
+        }
+
+        .back-link:hover {
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card card">
+            <div class="login-header">
+                <div class="login-icon">🔐</div>
+                <h1 class="login-title">Admin <span class="text-gradient">Login</span></h1>
+                <p class="login-subtitle">Sign in to manage your canteen</p>
+            </div>
+
+            <form class="login-form" id="admin-login-form" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="admin-email">Email Address</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="admin-email" class="form-input" placeholder="admin@canteen.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="admin-password">Password</label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="admin-password" class="form-input" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block" id="login-btn">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="index.html" class="back-link">← Back to Customer Page</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // Check if already logged in as admin
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const adminDoc = await db.collection('admins').doc(user.uid).get();
+                    if (adminDoc.exists) {
+                        window.location.href = 'admin-dashboard.html';
+                    }
+                } catch (e) {
+                    console.log('Not an admin');
+                }
+            }
+        });
+
+        // Handle Admin Login
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value.trim();
+            const password = document.getElementById('admin-password').value;
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+
+            const user = await emailSignIn(email, password);
+            if (user) {
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const input = document.getElementById('admin-password');
+            const toggle = document.querySelector('.password-toggle');
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+    </script>
+</body>
+</html>

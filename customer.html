@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse our delicious menu and place your order - CanteenHub">
+    <title>Menu — CanteenHub</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/customer.css">
+</head>
+<body>
+    <div class="customer-page">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span class="navbar-brand-icon">🍽️</span>
+                <span>Canteen<span class="text-gradient">Hub</span></span>
+            </div>
+            <div class="navbar-actions">
+                <button id="theme-toggle" class="btn btn-icon btn-secondary" onclick="toggleTheme()">🌙</button>
+                <div class="navbar-user" id="user-info" style="display: none;">
+                    <img class="navbar-user-avatar" id="nav-avatar" src="" alt="Avatar">
+                    <span class="navbar-user-name" id="nav-name"></span>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="signOutUser()" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Customer Navigation -->
+        <div class="customer-main">
+            <nav class="customer-nav">
+                <a href="customer.html" class="customer-nav-link active">🍽️ <span class="nav-text">Menu</span></a>
+                <a href="customer-orders.html" class="customer-nav-link">📋 <span class="nav-text">My Orders</span></a>
+                <a href="customer-bill.html" class="customer-nav-link">💳 <span class="nav-text">Bills</span></a>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Our <span class="text-gradient">Menu</span></h1>
+                <p>Table <span id="display-table">—</span> • Browse delicious dishes and add to your cart</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="menu-search" placeholder="Search for dishes..." oninput="handleSearch(this.value)">
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs" id="category-tabs">
+                <button class="category-tab active" data-category="all" onclick="filterCategory('all', this)">All</button>
+                <button class="category-tab" data-category="Starters" onclick="filterCategory('Starters', this)">🥗 Starters</button>
+                <button class="category-tab" data-category="Main Course" onclick="filterCategory('Main Course', this)">🍛 Main Course</button>
+                <button class="category-tab" data-category="Beverages" onclick="filterCategory('Beverages', this)">🥤 Beverages</button>
+                <button class="category-tab" data-category="Desserts" onclick="filterCategory('Desserts', this)">🍰 Desserts</button>
+                <button class="category-tab" data-category="Snacks" onclick="filterCategory('Snacks', this)">🍟 Snacks</button>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="menu-grid" id="menu-grid">
+                <!-- Food cards will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Cart FAB -->
+        <button class="cart-fab" id="cart-fab" onclick="openCart()" style="display: none;">
+            🛒 Cart
+            <span class="cart-fab-count" id="cart-count">0</span>
+        </button>
+
+        <!-- Cart Overlay -->
+        <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cart-sidebar">
+            <div class="cart-header">
+                <h2>🛒 Your Cart</h2>
+                <button class="cart-close" onclick="closeCart()">✕</button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items rendered here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span class="cart-total-amount" id="cart-total">₹0</span>
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" id="place-order-btn" onclick="placeOrder()">
+                    Place Order 🚀
+                </button>
+                <button class="btn btn-secondary btn-block mt-1" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/customer-menu.js"></script>
+</body>
+</html>
